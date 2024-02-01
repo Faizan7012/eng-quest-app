@@ -24,7 +24,7 @@ function Login() {
     e.preventDefault();
     setLoading(true)
     try {
-    let logUser = await axios.post('https://wandering-cyan-brown-bear.cyclic.app/auth/login' , {email , password});
+    let logUser = await axios.post('https://sore-erin-cougar-tam.cyclic.app/auth/login' , {email , password});
     let data = await logUser.data;
     console.log(data)
     if(data.status){

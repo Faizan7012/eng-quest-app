@@ -17,7 +17,7 @@ export default function TableBooks({data , setLoading , token , setData , toast}
     const {user} = useContext(AuthContext)
 
 const handleDelete = async(id)=>{
-    let res = await delBook(axios, setLoading , id, token , toast);
+    let res = await delBook(axios, setLoading , id, token , toast , user);
     let re1 = await res;
     if(re1){
         getAllBooks(axios, setData , setLoading)

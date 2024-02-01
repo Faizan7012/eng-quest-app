@@ -28,7 +28,7 @@ import { Box, Flex, Image,
       let newUser = {
         name , email , role , password
       }  
-      let signUser = await axios.post('https://wandering-cyan-brown-bear.cyclic.app/auth/signup' , newUser);
+      let signUser = await axios.post('https://sore-erin-cougar-tam.cyclic.app/auth/signup' , newUser);
       let data = await signUser.data;
       if(data.status){
         toast(

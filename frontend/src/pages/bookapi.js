@@ -1,8 +1,9 @@
 const getAllBooks = async(axios , setData , setLoading)=>{
     setLoading(true)
    try {
-    let res = await axios.get('https://wandering-cyan-brown-bear.cyclic.app/books');
+    let res = await axios.get('https://sore-erin-cougar-tam.cyclic.app/books');
     let ans = await res.data;
+    console.log(ans)
     if(ans.status){
         setData(ans.data);
         setLoading(false);
@@ -22,7 +23,7 @@ const getAllBooks = async(axios , setData , setLoading)=>{
 const getOldBooks = async(axios , setData , setLoading)=>{
     setLoading(true)
    try {
-    let res = await axios.get('https://wandering-cyan-brown-bear.cyclic.app/books/old');
+    let res = await axios.get('https://sore-erin-cougar-tam.cyclic.app/books/old');
     let ans = await res.data;
     if(ans.status){
         setData(ans.data);
@@ -43,7 +44,7 @@ const getOldBooks = async(axios , setData , setLoading)=>{
 const getNewBooks = async(axios , setData , setLoading)=>{
     setLoading(true)
    try {
-    let res = await axios.get('https://wandering-cyan-brown-bear.cyclic.app/books/new');
+    let res = await axios.get('https://sore-erin-cougar-tam.cyclic.app/books/new');
     let ans = await res.data;
     if(ans.status){
         setData(ans.data);
@@ -66,8 +67,9 @@ const createBook = async(axios , book , token , setLoading , setNewBook , toast 
    try {
 
     
-    let res = await axios.post('https://wandering-cyan-brown-bear.cyclic.app/books' , {book , token , user});
+    let res = await axios.post('https://sore-erin-cougar-tam.cyclic.app/books' , {book , token , user});
     let ans = await res.data;
+    console.log(res)
     if(ans.status){
         setLoading(false);
         setNewBook({
@@ -123,10 +125,13 @@ const createBook = async(axios , book , token , setLoading , setNewBook , toast 
 }
 
 
-const delBook = async(axios, setLoading , id, token, toast)=>{
+const delBook = async(axios, setLoading , id, token, toast , user)=>{
     setLoading(true)
+   
    try {
-    let res = await axios.delete(`https://wandering-cyan-brown-bear.cyclic.app/books/delete/${id}`, {headers:{token}});
+    let res = await axios.delete(`https://sore-erin-cougar-tam.cyclic.app/books/delete/${id}`,
+     {headers:{token , creatorEmail: user.email,
+    }});
     let ans = await res.data;
     if(ans.status){
         toast(
