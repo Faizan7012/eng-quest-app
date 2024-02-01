@@ -129,8 +129,8 @@ const delBook = async(axios, setLoading , id, token, toast , user)=>{
     setLoading(true)
    
    try {
-    let res = await axios.delete(`https://sore-erin-cougar-tam.cyclic.app/books/delete/${id}`,
-     {headers:{token , creatorEmail: user.email,
+    let res = await axios.delete(`https://sore-erin-cougar-tam.cyclic.app/books/delete/${id}`,{creatorEmail: user.email},
+     {headers:{token
     }});
     let ans = await res.data;
     if(ans.status){

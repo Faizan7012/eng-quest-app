@@ -5,18 +5,25 @@ const cors = require('cors');
 const { mongodbConnection } = require("../config/db");
 const authRoutes = require("../routes/auth.routes");
 const booksRoutes = require("../routes/book.routes");
+const morgan = require('morgan');
 
 const app = express();
 
 // middlewares
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: '*' }));
+app.use(morgan('combined'))
+
 
 
 
 //routes
 app.use("/auth", authRoutes);
 app.use("/books", booksRoutes);
+
+app.get('/', (req, res)=>{
+    res.send('welcome to the server')
+})
 
 
 
