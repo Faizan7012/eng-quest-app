@@ -18,7 +18,7 @@ import { Box, Button, Divider, Flex, Heading, SimpleGrid, Text, useDisclosure ,
 
 import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../context/user";
-import { createBook, getAllBooks, getNewBooks, getOldBooks } from "./bookapi";
+import { createBook, getAllBooks, getNewAndOldBooks } from "./bookapi";
 import axios from "axios";
 import TableBooks from "./Table";
 
@@ -36,7 +36,6 @@ export default function Books(){
     const { isOpen, onOpen, onClose } = useDisclosure()
     const btnRef = useRef()
     const toast = useToast()
-
     useEffect(()=>{
        getAllBooks(axios, setData , setLoading)
     },[])
@@ -76,8 +75,8 @@ export default function Books(){
             </Heading>
             <SimpleGrid gap='10px' columns={['1','2','3',user.role === 'CREATOR' ?'4':'3']}>
                <Button w='150px' color={'white'} bg='teal' _hover={{bg:'teal'}} onClick={()=> getAllBooks(axios, setData , setLoading)}>View All</Button>
-               <Button w='150px' color={'white'} bg='teal' _hover={{bg:'teal'}} onClick={()=> getNewBooks(axios, setData , setLoading)}>Last 10min</Button>
-               <Button w='150px' color={'white'} bg='teal' _hover={{bg:'teal'}} onClick={()=> getOldBooks(axios, setData , setLoading)}>Older than 10min</Button>
+               <Button w='150px' color={'white'} bg='teal' _hover={{bg:'teal'}} onClick={()=> getNewAndOldBooks(axios, setData , setLoading , 0)}>Last 10min</Button>
+               <Button w='150px' color={'white'} bg='teal' _hover={{bg:'teal'}} onClick={()=> getNewAndOldBooks(axios, setData , setLoading , 1)}>Older than 10min</Button>
                <Button display={user.role === 'CREATOR' ? 'block':'none'} w='150px' color={'white'} bg='teal' _hover={{bg:'teal'}} ref={btnRef} onClick={onOpen}>Create New +</Button>
 
                <Drawer

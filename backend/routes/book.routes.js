@@ -1,7 +1,6 @@
 const express = require("express");
 const { isCreator } = require("../middleware/creator");
 const booksModel = require("../models/book.model");
-const { isCreatordel } = require("../middleware/creatordel");
 const BookRouter = express.Router();
 
 BookRouter.get("/", async (req, res) => {
@@ -35,20 +34,11 @@ BookRouter.post("/", isCreator , async (req, res) => {
 
 
 
-BookRouter.delete("/delete/:id", isCreatordel, async (req, res) => {
+BookRouter.delete("/delete/:id", async (req, res) => {
     try {
-      let finded = await booksModel.find({_id : req.params.id});
-      if(finded[0].creatorEmail === req.body.creatorEmail){
+   
         await booksModel.findByIdAndDelete(req.params.id);
         res.json({status : true , message: 'Book deleted successfully' });
-      }
-
-      else{
-        res.status(500).json({
-          status:false,message : 'You can delete only your book'
-  
-        });
-      }
     
     } catch (error) {
       res.status(500).json({
@@ -60,14 +50,16 @@ BookRouter.delete("/delete/:id", isCreatordel, async (req, res) => {
 
 
 
-  // 4. Get all books created in the last 10 minutes
-BookRouter.get('/new', async (req, res) => {
-    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+  // 4. Get all books created in the last 10 minutes and before the last 10 minutes
+BookRouter.get('/get/:id', async (req, res) => {
+    const tenMinutes = new Date(Date.now() - 10 * 60 * 1000);
     try {
-      const recentBooks = await booksModel.find({ createdAt: { $gte: tenMinutesAgo } });
+      const Books = req.params.id == 0 ?
+      await booksModel.find({ createdAt: { $gte : tenMinutes } }):
+      await booksModel.find({ createdAt: { $lt : tenMinutes } })
       res.json({
         status:true,
-        data : recentBooks
+        data : Books
       });
     } catch (error) {
       res.status(500).json({ 
@@ -75,21 +67,28 @@ BookRouter.get('/new', async (req, res) => {
        });
     }
   });
-  
-  // 5. Get all books created before the last 10 minutes
-  BookRouter.get('/old', async (req, res) => {
-    const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
+
+
+
+  BookRouter.put("/edit/:id", async (req, res) => {
+    const {title ,publishedYear , author } = req.body.book;
     try {
-      const olderBooks = await booksModel.find({ createdAt: { $lt: tenMinutesAgo } });
-      res.json({
-        status:true,
-        data : olderBooks
-      });
+        const result = await booksModel.updateOne({ _id: req.params.id }, { $set: {title , publishedYear , author}  });
+  
+        if (result.modifiedCount === 1) {
+          res.send({ status :true , message: 'Document updated successfully' });
+        } else {
+          res.status(404).send({ status :false, message: 'Document not found' });
+        }
+    
     } catch (error) {
-      res.status(500).json({ 
+      res.status(500).json({
         status:false,message : error.message
+
       });
     }
   });
+
+  
 
 module.exports = BookRouter;

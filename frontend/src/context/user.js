@@ -1,24 +1,23 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+import Cookies from 'js-cookie';
 
 export const AuthContext = React.createContext();
-const userEng = JSON.parse(localStorage.getItem('userEng'))||{};
-const tokenEng = JSON.parse(localStorage.getItem('tokenEng'))||'';
-const authEng = userEng.name === undefined ? false : true
+let userEng = JSON.parse(localStorage.getItem('userEng'))||{};
 function AuthContextProvider({ children }) {
+
+  const tokenEng = Cookies.get('tokenEng')||'';
+  const authEng = tokenEng ? true : false;
   const [isAuth,setIsAuth] = useState(authEng);
   const [user , setUser] = useState(userEng);
   const [token , setToken] = useState(tokenEng)
-
 
   const logout = ()=>{
      setIsAuth(false);
      setUser({});
      setToken('')
-     localStorage.removeItem('userEng')
-     localStorage.removeItem('tokenEng')
+      Cookies.remove('tokenEng')
   }
- 
+
   return (
     <AuthContext.Provider value={{ isAuth, setIsAuth , user , setUser , logout , token , setToken}}>
       {children}

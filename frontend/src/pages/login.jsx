@@ -6,11 +6,14 @@ import { Box, Flex, Image,
     useToast,
     Button} from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
-import bg from './img/bg.svg'
-import avatar from './img/avatar.svg'
+import bg from './img/bg.png'
+import avatar from './img/avatar.png'
+import wave from './img/wave.png'
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/user";
 import axios from "axios";
+import Cookies from 'js-cookie';
+
 function Login() {
   const {setIsAuth , setUser , setToken} = useContext(AuthContext)
   const toast = useToast()
@@ -26,13 +29,12 @@ function Login() {
     try {
     let logUser = await axios.post('https://sore-erin-cougar-tam.cyclic.app/auth/login' , {email , password});
     let data = await logUser.data;
-    console.log(data)
     if(data.status){
         setUser(data.user);
         setIsAuth(true);
         setToken(data.token)
-        localStorage.setItem('userEng' , JSON.stringify(data.user))
-        localStorage.setItem('tokenEng' , JSON.stringify(data.token))
+        localStorage.setItem('userEng' ,JSON.stringify(data.user))
+        Cookies.set('tokenEng' , data.token , { expires: 7 })
         setEmail('')
         setPassword('')
         setLoading(false)
@@ -79,7 +81,7 @@ function Login() {
         
 }
 
-  return <Box w='100%' h='100vh' m='auto' backgroundRepeat='no-repeat' backgroundImage='url(https://i.ibb.co/6HWp0Vh/wave.png)'>
+  return <Box w='100%' h='100vh' m='auto' backgroundRepeat='no-repeat' backgroundImage={wave}>
 	        <Flex justifyContent='center' gap='100px' pt={['60px','60px','10px','0px']}>
 				 <Flex display={['none','none','none','flex']} alignItems='center' mt='20px' justifyContent='center'>
                 <Image maxW='600px'  src={bg} />

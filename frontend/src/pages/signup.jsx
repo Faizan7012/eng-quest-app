@@ -7,10 +7,12 @@ import { Box, Flex, Image,
     Button,
     Select} from "@chakra-ui/react";
   import React, { useState } from "react";
-  import bg from './img/bg.svg'
-  import avatar from './img/avatar.svg'
+  import bg from './img/bg.png'
+  import avatar from './img/avatar.png'
+  import wave from './img/wave.png'
   import { Link, useNavigate } from "react-router-dom";
   import axios from 'axios';
+
   function Signup() {
   const toast = useToast()
   const [email, setEmail] = useState("");
@@ -24,43 +26,60 @@ import { Box, Flex, Image,
     const handleSubmit = async(e) => {
       e.preventDefault();
       setLoading(true)
+      const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       try {
       let newUser = {
         name , email , role , password
       }  
-      let signUser = await axios.post('https://sore-erin-cougar-tam.cyclic.app/auth/signup' , newUser);
-      let data = await signUser.data;
-      if(data.status){
-        toast(
-            {
-              title: 'Signup Success',
-              description: data.message,
-              status: 'success',
-              duration: 3000,
-              position: "top",
-              isClosable: true,
-            }
-          )
-          setEmail('')
-          setName('')
-          setPassword('')
-          setRole('')
-          setLoading(false)
-          navigate('/login')
+      if(regex.test(newUser.email)){
+
+        let signUser = await axios.post('https://sore-erin-cougar-tam.cyclic.app/auth/signup' , newUser);
+        let data = await signUser.data;
+        if(data.status){
+          toast(
+              {
+                title: 'Signup Success',
+                description: data.message,
+                status: 'success',
+                duration: 3000,
+                position: "top",
+                isClosable: true,
+              }
+            )
+            setEmail('')
+            setName('')
+            setPassword('')
+            setRole('')
+            setLoading(false)
+            navigate('/login')
+        }
+        else{
+          toast(
+              {
+                title: 'Signup Failed',
+                description: data.message,
+                status: 'error',
+                duration: 3000,
+                position: "top",
+                isClosable: true,
+              }
+            )
+            setLoading(false)
+  
+        }
       }
       else{
         toast(
-            {
-              title: 'Signup Failed',
-              description: data.message,
-              status: 'error',
-              duration: 3000,
-              position: "top",
-              isClosable: true,
-            }
-          )
-          setLoading(false)
-
+          {
+            title: 'Warning',
+            description: 'Enter Email in valid Format',
+            status: 'warning',
+            duration: 3000,
+            position: "top",
+            isClosable: true,
+          }
+        )
+        setLoading(false)
       }
 
       } catch (error) {
@@ -79,7 +98,7 @@ import { Box, Flex, Image,
           
   }
   
-  return <Box w='100%' h='100vh' m='auto' backgroundRepeat='no-repeat' backgroundImage='url(https://i.ibb.co/6HWp0Vh/wave.png)'>
+  return <Box w='100%' h='100vh' m='auto' backgroundRepeat='no-repeat' backgroundImage={wave}>
           <Flex justifyContent='center' gap='100px' pt={['60px','60px','10px','0px']}>
          <Flex display={['none','none','none','flex']} alignItems='center' mt='20px' justifyContent='center'>
                 <Image maxW='600px'  src={bg} />

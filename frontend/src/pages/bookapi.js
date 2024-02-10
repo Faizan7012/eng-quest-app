@@ -1,9 +1,8 @@
-const getAllBooks = async(axios , setData , setLoading)=>{
+const getAllBooks = async(axios , setData , setLoading )=>{
     setLoading(true)
    try {
     let res = await axios.get('https://sore-erin-cougar-tam.cyclic.app/books');
     let ans = await res.data;
-    console.log(ans)
     if(ans.status){
         setData(ans.data);
         setLoading(false);
@@ -20,31 +19,10 @@ const getAllBooks = async(axios , setData , setLoading)=>{
    }
 }
 
-const getOldBooks = async(axios , setData , setLoading)=>{
+const getNewAndOldBooks = async(axios , setData , setLoading , id )=>{
     setLoading(true)
    try {
-    let res = await axios.get('https://sore-erin-cougar-tam.cyclic.app/books/old');
-    let ans = await res.data;
-    if(ans.status){
-        setData(ans.data);
-        setLoading(false);
-    }
-    else{
-        setLoading(false);
-        alert('Something went wrong try again!')
-
-    }
-
-   } catch (error) {
-      setLoading(false);
-      alert(error.message)
-   }
-}
-
-const getNewBooks = async(axios , setData , setLoading)=>{
-    setLoading(true)
-   try {
-    let res = await axios.get('https://sore-erin-cougar-tam.cyclic.app/books/new');
+    let res = await axios.get(`https://sore-erin-cougar-tam.cyclic.app/books/get/${id}`);
     let ans = await res.data;
     if(ans.status){
         setData(ans.data);
@@ -67,7 +45,9 @@ const createBook = async(axios , book , token , setLoading , setNewBook , toast 
    try {
 
     
-    let res = await axios.post('https://sore-erin-cougar-tam.cyclic.app/books' , {book , token , user});
+    let res = await axios.post('https://sore-erin-cougar-tam.cyclic.app/books' , {book , token , user},{
+      headers : {token}
+    });
     let ans = await res.data;
     console.log(res)
     if(ans.status){
@@ -126,13 +106,13 @@ const createBook = async(axios , book , token , setLoading , setNewBook , toast 
 
 
 const delBook = async(axios, setLoading , id, token, toast , user)=>{
+  console.log(user.email)
     setLoading(true)
    
    try {
-    let res = await axios.delete(`https://sore-erin-cougar-tam.cyclic.app/books/delete/${id}`,{creatorEmail: user.email},
-     {headers:{token
-    }});
+    let res = await axios.delete(`https://sore-erin-cougar-tam.cyclic.app/books/delete/${id}`,{'creatorEmail': user.email});
     let ans = await res.data;
+    console.log(res)
     if(ans.status){
         toast(
             {
@@ -181,6 +161,60 @@ const delBook = async(axios, setLoading , id, token, toast , user)=>{
    }
 }
 
+
+const editBook = async(axios, setLoading , id, toast , user , newEditBook)=>{
+  setLoading(true)
+ 
+ try {
+  let res = await axios.put(`https://sore-erin-cougar-tam.cyclic.app/books/edit/${id}`,{creatorEmail: user.email , book : newEditBook});
+  let ans = await res.data;
+  if(ans.status){
+      toast(
+          {
+            title: 'Edited',
+            description: ans.message,
+            status: 'success',
+            duration: 3000,
+            position: "top",
+            isClosable: true,
+          }
+        )
+      setLoading(false);
+      return true
+  }
+  else{
+      setLoading(false);
+      toast(
+          {
+            title: 'Failed',
+            description: ans.message,
+            status: 'error',
+            duration: 3000,
+            position: "top",
+            isClosable: true,
+          }
+        )
+      return false
+     
+  }
+
+ } catch (error) {
+    setLoading(false);
+    toast(
+      {
+        title: 'Failed',
+        description: error.message,
+        status: 'error',
+        duration: 3000,
+        position: "top",
+        isClosable: true,
+      }
+    )
+
+    return false
+
+ }
+}
 export {
-    getAllBooks , getNewBooks , getOldBooks , createBook , delBook
+    getAllBooks , getNewAndOldBooks , createBook , delBook , editBook
 }
