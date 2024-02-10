@@ -16,6 +16,7 @@ function AuthContextProvider({ children }) {
      setUser({});
      setToken('')
       Cookies.remove('tokenEng')
+      localStorage.removeItem('userEng')
   }
 
   return (
